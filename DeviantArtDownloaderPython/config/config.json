@@ -1,3 +1,4 @@
 {
-	"cookie_file":  "COOKIE_FILE"
+	"cookie_file":  "COOKIE_FILE",
+	"redirect_uri": "http://localhost:8000/callback"
 }
