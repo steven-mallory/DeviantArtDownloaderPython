@@ -5,4 +5,4 @@ CONFIG_JSON_PATH = Path(__file__).parent.parent / "config" / "config.json"
 with open(CONFIG_JSON_PATH, 'r') as f:
     CONFIG = json.load(f)
 
-COOKIES_FILE = CONFIG["cookie_file"] #this is my var
+#COOKIES_FILE = CONFIG["cookie_file"] #this is my var
