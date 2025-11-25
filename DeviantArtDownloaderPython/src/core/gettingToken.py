@@ -33,7 +33,7 @@ def login():
         "response_type": "code" 
     }
     fullUrl = oauthString + urllib.parse.urlencode(params)
-    return requests.redirect(fullUrl) #login
+    return redirect(fullUrl) #login, flasa
 
 # STEP 2 is implicit, done by DA
 #2: DeviantArt sends an auth code to redirect_uri.
@@ -58,20 +58,22 @@ def callback():
     params = {
         "client_id": CONFIG["client_id"],
         "redirect_uri": CONFIG["redirect_uri"],
-        "grand_type": "authorization_code",
+        "grant_type": "authorization_code",
         "code": AUTH_CODE,
         #dont share
         "client_secret": CONFIG["client_secret"]
     }
-    x = requests.post(url, params) 
+    x = requests.post(tokenEndpoint, params)  #this will be tested using mocker.patch, whatever that means
     # STEP 5 
     #5: Receive access code through JSON returned by DeviantArt
     try:
         accessToken = x.json().get("access_token") #WOOO!!
         print(accessToken)
+        return accessToken
     except:
         print("Did not find access_token")
 
+if __name__ == "__main__"
 app.run(port=8000, debug=True)
 
         #reading from the GET request
