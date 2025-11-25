@@ -1,3 +1,5 @@
+from pathlib import Path
+print(Path)
 from DeviantArtDownloaderPython.src.core.gettingToken import app
 
 
@@ -25,6 +27,7 @@ def test_step45(mocker): #mocker is like bypassing decorator syntax, something p
     mocker.patch("requests.post", return_value=MockAPIPost()) 
 
     resp = client.get("/callback?code=fakeDumbStuff")
+    assert resp != None
     assert resp.status_code == 200
-    assert resp.json().get("access_token") == "blahblahLOOL!"
+    assert resp.json["access_token"] == "blahblahLOOL!"
     

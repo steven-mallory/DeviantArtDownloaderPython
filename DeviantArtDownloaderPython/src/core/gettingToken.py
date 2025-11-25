@@ -5,6 +5,7 @@ from flask import redirect #used for step 1, need to tell user to go and login!
 import requests #used for step 4, 5
 from DeviantArtDownloaderPython.src.config import CONFIG
 
+from flask import jsonify #so that test 45 works
 
 # STEPS
 #1: Redirect user to Login
@@ -69,12 +70,14 @@ def callback():
     try:
         accessToken = x.json().get("access_token") #WOOO!!
         print(accessToken)
-        return accessToken
+        print(jsonify({"access_token": accessToken})) #jsonify
+        return jsonify({"access_token": accessToken}) #jsonify
     except:
         print("Did not find access_token")
+        return jsonify({"error": "no access token found"}), 500
 
-if __name__ == "__main__"
-app.run(port=8000, debug=True)
+if __name__ == "__main__":
+    app.run(port=8000, debug=True)
 
         #reading from the GET request
 #print(fullUrl)
