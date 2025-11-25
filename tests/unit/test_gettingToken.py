@@ -24,7 +24,7 @@ def test_step45(mocker): #mocker is like bypassing decorator syntax, something p
         def json(self):
             return {"access_token": "blahblahLOOL!"}
 
-    mocker.patch("requests.post", return_value=MockAPIPost()) 
+    mocker.patch("requests.post", return_value=MockAPIPost()) #replace requests post with mockapi obj
 
     resp = client.get("/callback?code=fakeDumbStuff")
     assert resp != None

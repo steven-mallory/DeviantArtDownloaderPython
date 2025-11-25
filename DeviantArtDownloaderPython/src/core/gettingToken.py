@@ -5,6 +5,7 @@ from flask import redirect #used for step 1, need to tell user to go and login!
 import requests #used for step 4, 5
 from DeviantArtDownloaderPython.src.config import CONFIG
 
+import json
 from flask import jsonify #so that test 45 works
 
 # STEPS
@@ -31,9 +32,11 @@ def login():
         "client_id": CONFIG["client_id"],
         "redirect_uri": "http://localhost:8000/callback",
         "state": state,
-        "response_type": "code" 
+        "response_type": "code" ,
+        "scope": "browse collection"
     }
     fullUrl = oauthString + urllib.parse.urlencode(params)
+    print(fullUrl)
     return redirect(fullUrl) #login, flasa
 
 # STEP 2 is implicit, done by DA
@@ -69,11 +72,16 @@ def callback():
     #5: Receive access code through JSON returned by DeviantArt
     try:
         accessToken = x.json().get("access_token") #WOOO!!
-        print(accessToken)
-        print(jsonify({"access_token": accessToken})) #jsonify
-        return jsonify({"access_token": accessToken}) #jsonify
+        data = {"access_token": accessToken}
+        try:
+            with open("token.json", "w") as f:
+                json.dump({"access_token": accessToken}, f)
+        except Exception as e:
+            data["FILE IO"] = "FAILED, PLEASE COPY" 
+            data["ERROR"] = f"{e}"
+        return jsonify(data) #jsonify, basically a response object
+        
     except:
-        print("Did not find access_token")
         return jsonify({"error": "no access token found"}), 500
 
 if __name__ == "__main__":
