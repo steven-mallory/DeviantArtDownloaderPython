@@ -22,7 +22,7 @@ from flask import jsonify #so that test 45 works
 oauthString = "https://www.deviantart.com/oauth2/authorize?" 
 state = secrets.token_hex(16)
 
-print("Please visit", "localhost:8000/login", "in your browser") 
+print("----------------------INSTRUCTIONS\n-----------------------Please visit", "localhost:8000/login", "in your browser\n------------------------------------------------------") 
 
 app = Flask(__name__)
 @app.route('/login')

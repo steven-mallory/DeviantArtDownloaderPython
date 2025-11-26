@@ -1,9 +1,10 @@
 import urllib.parse
 import requests
-
+import sys
 import json
 
-from path import Path #writing 
+from pathlib import Path #writing 
+
 
 #let's say we have a token now, read it somehow
 
@@ -17,56 +18,48 @@ params = {
 if input("Do you want to specify a user's favourites? (y/N)\n").lower() == 'y':
     params["username"] = input("Please specify the username\n")
 
-#collectionsFolderURL = "https://www.deviantart.com/api/v1/oauth2/collections/folders?" + urllib.parse.urlencode(params)
-collectionsFolderURL = "https://www.deviantart.com/api/v1/oauth2/collections/all?" + urllib.parse.urlencode(params)
-response = requests.get(collectionsFolderURL)
-print(response.status_code)
-print(json.dumps(response.json(), indent=4))
-for folder in response["results"]:
-    if folder["name"] == "favourites":
-        print(folder)
-        favFolderID = folder["folderid"]
-        break
 
-#need test casefor folder
-devURL = f"https://www.deviantart.com/api/v1/oauth2/collections/{favFolderID}"
+#print(json.dumps(response, indent=4))
+
+devURL = "https://www.deviantart.com/api/v1/oauth2/collections/all?" + urllib.parse.urlencode(params)
 params["limit"] = 24 #24 per page, as per API. use offset after to nto download the same thing over and over
-
 directory = Path("DeviantArtDownloads")
-directory.mkdir(exist_ok=True)
+directory.mkdir(parents=True, exist_ok=True)
+
+count = 0;
 while True:
     response = requests.get(devURL, params=params).json()
-    if not response.get("has_more"):
-        break
 
-    
-    # download
-    for item in response["results"]:
-        devID = item["deviationid"]
-        dlUrl = f"https://www.deviantart.com/api/v1/oauth2/deviation/download/{devID}"
+    for item in response["results"]: #I think this already finds all the favourites
+        print(json.dumps(item, indent=4))
+        
+        # download
+        
+        #devID = item["deviationid"]
+        
+        #dlUrl = f"https://www.deviantart.com/api/v1/oauth2/deviation/download/{devID}"
 
-        response2 = requests.get(dlUrl, params=params).json()
+        #response2 = requests.get(dlUrl, params=params).json()
+        response2 = item["content"]
+        #print(response2.keys())
         if "src" not in response2:
             print("Did not find 'src' in", response2)
             continue
         url = response2["src"]
         img_data = requests.get(url).content
-
-        with open(directory / url.split("/")[-1], "wb") as f:
+        t = url.split("/")[-1].split("?")[0]
+        ext = Path(t).suffix
+        print(f"LOOOL {ext}")
+        with open(directory / f"{count}{ext}", "wb") as f:
             f.write(img_data)
-    
-
-
+        count = count + 1 
+    if not response.get("has_more"):
+        break
     params["offset"] = response["next_offset"]
-
-#/gallery/{folderid}
-#for _ in range
-
     
 
-def download(devID):
-    x = 5     
 
+    
 
 
 
